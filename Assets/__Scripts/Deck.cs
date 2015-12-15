@@ -235,6 +235,21 @@ public class Deck : MonoBehaviour {
 				tGO.transform.localPosition = Vector3.zero;  // slap it smack dab in the middle
 				tGO.name = "face";
 			}
+
+			//add card back
+			//the card_back will be able to cover everything else on the card
+			tGO = Instantiate( prefabSprite ) as GameObject;
+			tSR = tGO.GetComponent<SpriteRenderer>();
+			tSR.sprite = cardBack;
+			tGO.transform.parent = card.transform;
+			tGO.transform.localPosition = Vector3.zero;
+			//this is a higher sortingorder than anythign else
+			tSR.sortingOrder = 2;
+			tGO.name = "back";
+			card.back = tGO;
+
+			//default to face-up
+			card.faceUp = false;
 			
 			cards.Add (card);
 		} // for all the Cardnames	
@@ -249,5 +264,27 @@ public class Deck : MonoBehaviour {
 		}//foreach	
 		return (null);  // couldn't find the sprite (should never reach this line)
 	 }// getFace 
+
+	//shuffle the cards in deck.cards
+	static public void Shuffle(ref List<Card>oCards){
+		//create a temporary list to hold the new shuffle order
+		List<Card> tCards = new List<Card> ();
+
+		int ndx; // this will hold the index of the card to be moved
+		tCards = new List<Card> (); // initialize the temporary list;
+		// repeat as long as there are cards in the original list
+		while (oCards.Count > 0) {
+			//pick the index of a random card
+			ndx = Random.Range (0, oCards.Count);
+			//add that card to the temporary list
+			tCards.Add (oCards [ndx]);
+			// And remove that card from the original list
+			oCards.RemoveAt (ndx);
+		}
+		//replace the original list with the temporary list
+		oCards = tCards;
+		//because ocards is a reference variable, the original that was
+		//passed in is changed as well.
+	}
 	
 } // Deck class
